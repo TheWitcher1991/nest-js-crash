@@ -7,9 +7,13 @@ import * as process from 'process';
 import { User } from './users/users.entity';
 import { RolesModule } from './roles/roles.module';
 import { UsersModule } from './users/users.module';
+import { Role } from './roles/entities/roles.entity';
+import { UserRoles } from './roles/entities/user-roles.entity';
+import { AuthModule } from './auth/auth.module';
+import { PostsModule } from './posts/posts.module';
 
 const configModules = [
-  UsersModule, RolesModule
+  UsersModule, RolesModule, AuthModule, PostsModule
 ]
 
 const libModules = [
@@ -23,7 +27,7 @@ const libModules = [
     username: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASSWORD,
     database: process.env.POSTGRES_PASSWORD,
-    models: [User],
+    models: [User, Role, UserRoles],
     autoLoadModels: true,
   })
 ]

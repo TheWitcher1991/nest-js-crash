@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ValidatePipe } from './pipes/validate-pipe';
 
 const setupSwagger = (app) => {
   const config = new DocumentBuilder()
@@ -27,6 +28,8 @@ async function bootstrap() {
   });
 
   app.setGlobalPrefix('api');
+
+  app.useGlobalPipes(new ValidatePipe());
 
   setupSwagger(app);
 

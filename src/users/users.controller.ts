@@ -1,8 +1,11 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards, UsePipes } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './users.dto';
+import { AddRoleDto, BanUserDto, CreateUserDto } from './users.dto';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from './users.entity';
+import { RoleGuard } from '../auth/guards/roles.guards';
+import { Roles } from '../auth/auth.decorator';
+import { ValidatePipe } from '../pipes/validate-pipe';
 
 @ApiTags('users')
 @ApiBearerAuth()
@@ -15,20 +18,32 @@ export class UsersController {
   })
   @ApiBody({ type: CreateUserDto })
   @ApiResponse({ type: User })
+  @UsePipes(ValidatePipe)
   @Post()
   create(@Body() userDto: CreateUserDto) {
     return this.usersService.create(userDto);
   }
 
   @ApiResponse({ type: [User] })
+  @Roles('admin')
+  @UseGuards(RoleGuard)
   @Get()
   getAll() {
     return this.usersService.getAll()
   }
 
-  @ApiResponse({ type: User })
-  @Get(':id')
-  getOne(@Param('id', ParseIntPipe) id: string) {
-    return this.usersService.getById(+id)
+  @Roles('admin')
+  @UseGuards(RoleGuard)
+  @Get('/role')
+  addRole(@Body() roleDto: AddRoleDto) {
+    return this.usersService.addRole(roleDto)
   }
+
+  @Roles('admin')
+  @UseGuards(RoleGuard)
+  @Get('/ban')
+  ban(@Body() banDto: BanUserDto) {
+    return this.usersService.banUser(banDto)
+  }
+
 }
