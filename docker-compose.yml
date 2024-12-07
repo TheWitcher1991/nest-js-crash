@@ -1,0 +1,42 @@
+services:
+  nest:
+    container_name: nest-service
+    build:
+      context: .
+    env_file:
+      - .development.env
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - 5000:5000
+      - 9229:9229
+    command:
+      - yarn start:dev
+    depends_on:
+      - postgres
+    networks:
+      - default
+    restart: always
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres-service
+    env_file:
+      - .development.env
+    environment:
+      PG_DATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - default
+    restart: always
+
+volumes:
+  pgdata:
+
+networks:
+  default:
+    driver: bridge
