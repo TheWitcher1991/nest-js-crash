@@ -14,15 +14,9 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @ApiOperation({
-    summary: 'Get all users'
+    summary: 'Create user',
   })
-  @ApiBody({ type: CreateUserDto })
-  @ApiResponse({ type: User })
-  @UsePipes(ValidatePipe)
-  @Post()
-  create(@Body() userDto: CreateUserDto) {
-    return this.usersService.create(userDto);
-  }
+
 
   @ApiResponse({ type: [User] })
   @Roles('admin')
